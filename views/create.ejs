@@ -1,0 +1,16 @@
+<% include partials/header.ejs %>
+<body id="create">
+  <div class="container">
+    <div class="wrap">
+      <h1>Submit Blog Post</h1>
+      <form method="POST" action="/create">
+        Title: </br>
+        <input type="text" name="title"</input>
+        Content: </br>
+        <textarea  name="content" rows="12" columns="30"></textarea>
+        <button type="submit" value="submit" class='btn-default'>Submit</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

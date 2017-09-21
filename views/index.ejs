@@ -1,0 +1,15 @@
+<% include partials/header.ejs %>
+<body>
+  <div class="container">
+    <h1>Blog Posts</h1>
+        <% for (var i=0; i < blog.length; i++){ %>
+
+          <div class="col-xs-6" id="blog[i]">
+            <h2> <%= blog[i].Title %> </h2>
+            <p> <%= blog[i].Content %> </p>
+            <button type="button" class="readMore" id="<%= blog[i]._id %>">Read More</button>
+          </div>
+          <% } %>
+        </div>
+    </body>
+</html>
