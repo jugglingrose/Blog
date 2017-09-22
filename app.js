@@ -49,8 +49,7 @@ app.get('/fullPost/:blog', function(req,res){
   console.log(o_id);
   db.collection('Blog').find({"_id": o_id}, function(err, result){
     if (err) throw err;
-    console.log(result.Title);
-    console.log(result.Content);
+  
   });
 });
 
