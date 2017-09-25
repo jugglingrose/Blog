@@ -7,6 +7,7 @@
           <h2> <%= blog[i].Title %> </h2>
             <% var C = blog[i].Content %>
             <p> <%= C.slice(0, 100)+"..." %> </p>
+            <!--<a href="/fullPost/<%=blog[i]._id%>">Enter</a>-->
             <button type="button" class="readMore" id="<%= blog[i]._id %>">Read More</button>
           </div>
           <% } %>

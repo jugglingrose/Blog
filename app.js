@@ -47,9 +47,12 @@ app.get('/fullPost/:blog', function(req,res){
   console.log("get called");
   var o_id = new mongo.ObjectID(req.params.blog);
   console.log(o_id);
-  db.collection('Blog').find({"_id": o_id}, function(err, result){
+  db.collection('Blog').findOne({"_id": o_id}, function(err, result){
     if (err) throw err;
-  
+    console.log("result is:" + result);
+    console.log("Title is:" + result.Title);
+    res.render('fullPost', {Full:result});
+
   });
 });
 
