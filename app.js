@@ -15,6 +15,8 @@ var MongoClient = require('mongodb').MongoClient;
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 
+
+
 app.get('/', function(req, res){
   db.collection('Blog').find({}).toArray(function(err,result){
     if (err) throw err;
@@ -33,9 +35,11 @@ app.post('/create', function(req, res){
   console.log("I am in create post");
   var title= req.body.title;
   var content= req.body.content;
+  var date= new Date();
   console.log(title);
   console.log(content);
-  db.collection('Blog').insertOne({'Title': title, 'Content': content}, function(err, result){
+  console.log(date);
+  db.collection('Blog').insertOne({'Title': title, 'Content': content, 'Date': date}, function(err, result){
     if (err) throw err
     console.log("item successfully added to database");
     res.redirect('/');
