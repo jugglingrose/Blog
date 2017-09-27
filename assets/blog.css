@@ -9,3 +9,8 @@
 h1{
   text-align: center;
 }
+
+/* Log In Page */
+input{
+  width: 100%;
+}

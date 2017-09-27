@@ -3,6 +3,9 @@
   <% include partials/nav.ejs %>
   <div class="container">
     <h1>Blog Posts</h1>
+        <!--Dispaly blogs from most recent at top -->
+        <% blog.reverse() %>
+        <!--Filter through each post and display partial blog-->
         <% for (var i=0; i < blog.length; i++){ %>
         <div class="col-xs-6" id="blog[i]">
           <h2> <%= blog[i].Title %> </h2>

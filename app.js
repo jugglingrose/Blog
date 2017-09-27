@@ -16,6 +16,14 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 
 
+//for authentication you need cookie parser and bcrypt//
+//Cookie Parser//
+var cookieParser = require('cookie-parser');
+app.use(cookieParser(config.cookie_secret));
+
+//Bcrypt for password hashing//
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 app.get('/', function(req, res){
   db.collection('Blog').find({}).toArray(function(err,result){
@@ -46,9 +54,16 @@ app.post('/create', function(req, res){
   });
 });
 
+app.get('/edit/:edit', function(req,res){
+  console.log("edit called");
+  var o_id = new mongo.ObjectId(req.params.blog)
+  console.log(o_id);
+
+});
+
 /*Create A full view blog post with the blog post title as the permalink*/
 app.get('/fullPost/:blog', function(req,res){
-  console.log("get called");
+  console.log("get full post called");
   var o_id = new mongo.ObjectID(req.params.blog);
   console.log(o_id);
   db.collection('Blog').findOne({"_id": o_id}, function(err, result){
@@ -56,7 +71,6 @@ app.get('/fullPost/:blog', function(req,res){
     console.log("result is:" + result);
     console.log("Title is:" + result.Title);
     res.render('fullPost', {Full:result});
-
   });
 });
 
