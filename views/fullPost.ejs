@@ -1,13 +1,28 @@
 <% include partials/header.ejs %>
 <body>
   <div class="container">
+    <section>
+    <div class="row">
           <div class="col-xs-12" id="blog[i]">
             <h1> <%= Full.Title %> </h1>
             <p> <%= Full.Date.toDateString() %> <p>
             <p> <%= Full.Content %> </p>
-            <button type="button" id="Full._id" class="edit btn btn-default">Edit</button>
-            <button type="button" name="delete" class="btn btn-default">Delete</button>
+            <button type="button" id="<%=Full._id%>" class="edit btn btn-default">Edit</button>
+            <button type="button" id="<%= Full._id%>" name="delete" class="delete btn btn-default">Delete</button>
           </div>
         </div>
-    </body>
+      <div class="row">
+        <div class="col-xs-12">
+          <h2>Comments</h2>
+          <p> </p>
+          <form method="POST" action="/fullpost">
+            <input name="identity" type="hidden" value="<%=Full._id%>" ></input>
+            <textarea name="comment" type="text" col="30" row"6"></textarea>
+            <button type="submit" class="comment" value="submit">SUBMIT</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+  </body>
 </html>
