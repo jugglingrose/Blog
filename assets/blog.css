@@ -1,8 +1,8 @@
-#create input{
+input{
   width: 100%;
 }
 
-#create textarea{
+textarea{
   width: 100%;
 }
 
@@ -12,5 +12,12 @@ h1{
 
 /* Log In Page */
 input{
+  width: 100%;
+}
+
+input{
+  width: 100%;
+}
+textarea{
   width: 100%;
 }
