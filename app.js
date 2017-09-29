@@ -28,17 +28,25 @@ const saltRounds = 10;
 
 
 app.get('/', function(req, res){
-  db.collection('Blog').find({}).toArray(function(err,result){
+    db.collection('Blog').find({}).toArray(function(err,result){
     if (err) throw err;
     console.log(result);
     res.render('index', {blog: result});
   });
 });
 
-
+//load create page only if user is logged in//
 app.get('/create', function(req, res){
-  res.render('create');
+  console.log('Cookies:', req.cookies);
+  console.log("singed cookie:", req.signedCookies);
+  if (req.signedCookies.username !== undefined){
+    res.render('create');
+  }
+  else{
+    res.redirect('/login');
+  }
 });
+
 
 //insert blog post into DB then display new blog post on home page//
 app.post('/create', function(req, res){
@@ -132,9 +140,46 @@ app.post('/fullpost', function (req,res){
   });
 });
 
-/*app.get('/login', function(req, res){
+app.get('/login', function(req, res){
   res.render('login');
-});*/
+});
+
+//user log in//
+app.post('/login', function(req, res){
+  console.log("I am in login post");
+  var username = req.body.username;
+  var password = req.body.password;
+  console.log(username);
+  db.collection('BlogUser').findOne({"username": username}, function(err, user){
+    if(!user){
+      console.log("username not found");
+      res.redirect('/login');
+    }
+    else{
+      console.log(user.password);
+      bcrypt.compare(password, user.password, function(err,result){
+        if(result){
+          //password match//
+          console.log("username and password match");
+          res.cookie('username', username, {signed:true});
+          res.redirect('/create');
+        }else {
+          //passwords don't match//
+          console.log('username and password do not match');
+          res.redirect('/login');
+        }
+      });
+    }
+  });
+});
+
+//log user out, cookies cleared //
+app.get('/logout', function(req,res){
+  res.clearCookie('username');
+  res.redirect('/');
+});
+
+
 
 app.get('/signup', function(req,res){
   res.render('signup');
@@ -156,7 +201,7 @@ app.post('/signup', function(req,res){
     username, 'password': hash}, function(err, result){
       if (err) throw err;
       console.log("new user inserted to BlogUser DB");
-      res.redirect('/');
+      res.redirect('/login');
     });
   });
 });
