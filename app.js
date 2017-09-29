@@ -132,6 +132,36 @@ app.post('/fullpost', function (req,res){
   });
 });
 
+/*app.get('/login', function(req, res){
+  res.render('login');
+});*/
+
+app.get('/signup', function(req,res){
+  res.render('signup');
+});
+
+//new user signup //
+app.post('/signup', function(req,res){
+  console.log("I am in sign up Post");
+  var name = req.body.name;
+  var email = req.body.email;
+  var username = req.body.username;
+  var password = req.body.password;
+  console.log(name);
+  console.log(email);
+  console.log(username);
+  console.log(password);
+  bcrypt.hash(password, saltRounds, function(err,hash){
+    db.collection("BlogUser").insertOne({'name': name, 'email': email, 'username':
+    username, 'password': hash}, function(err, result){
+      if (err) throw err;
+      console.log("new user inserted to BlogUser DB");
+      res.redirect('/');
+    });
+  });
+});
+
+
 MongoClient.connect(config.mongo_uri, function(err, database){
   if (err) throw err;
   console.log('succesfully connected to database');
