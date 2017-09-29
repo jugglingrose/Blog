@@ -106,12 +106,12 @@ app.get('/fullpost/:blog', function(req,res){
     if (err) throw err;
     console.log("result is:" + result);
     console.log("Title is:" + result.Title);
-    res.render('fullpost', {Full:result
-  /*
-  db.collection('Comments').find({"Blog_id": o_id}, function(err, results){
+    /*res.render('fullpost', {Full:result});*/
+  db.collection('Comments').find({"Blog_id": o_id}).toArray(function(err, results){
     if (err) throw err;
     console.log(results);
-    /*res.render('fullpost', {Full:result, postedComment: results});*/
+    console.log(results.Comment);
+    res.render('fullpost', {Full:result, postedComment: results});
   });
   });
 });
