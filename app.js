@@ -38,8 +38,8 @@ app.get('/', function(req, res){
 //load create page only if user is logged in//
 app.get('/create', function(req, res){
   console.log('Cookies:', req.cookies);
-  console.log("singed cookie:", req.signedCookies);
-  if (req.signedCookies.username !== undefined){
+  console.log("signed cookie:", req.signedCookies);
+  if (req.signedCookies.userid !== undefined){
     res.render('create');
   }
   else{
@@ -54,10 +54,13 @@ app.post('/create', function(req, res){
   var title= req.body.title;
   var content= req.body.content;
   var date= new Date();
+  /*var signed = cookies.get( "signed", { signed: true } )*/
+  var signed = req.signedCookies.userid;
   console.log(title);
   console.log(content);
   console.log(date);
-  db.collection('Blog').insertOne({'Title': title, 'Content': content, 'Date': date}, function(err, result){
+  console.log("this is the userID cookie:" + signed);
+  db.collection('Blog').insertOne({'Title': title, 'Content': content, 'Date': date, 'UserId': ObjectId(signed)}, function(err, result){
     if (err) throw err;
     console.log("item successfully added to database");
     res.redirect('/');
@@ -157,11 +160,12 @@ app.post('/login', function(req, res){
     }
     else{
       console.log(user.password);
+      console.log("the id is:" + user._id);
       bcrypt.compare(password, user.password, function(err,result){
         if(result){
           //password match//
           console.log("username and password match");
-          res.cookie('username', username, {signed:true});
+          res.cookie('userid', user._id, {signed:true});
           res.redirect('/create');
         }else {
           //passwords don't match//
@@ -176,6 +180,7 @@ app.post('/login', function(req, res){
 //log user out, cookies cleared //
 app.get('/logout', function(req,res){
   res.clearCookie('username');
+  console.log("logged out");
   res.redirect('/');
 });
 
