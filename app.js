@@ -117,12 +117,15 @@ app.get('/fullpost/:blog', function(req,res){
     if (err) throw err;
     console.log("result is:" + result);
     console.log("Title is:" + result.Title);
+    console.log("blog user id is:" + result.UserId);
     /*res.render('fullpost', {Full:result});*/
   db.collection('Comments').find({"Blog_id": o_id}).toArray(function(err, results){
     if (err) throw err;
     console.log(results);
     console.log(results.Comment);
-    res.render('fullpost', {Full:result, postedComment: results});
+    console.log(req.signedCookies.userid);
+    res.render('fullpost', {Full:result, postedComment: results, User: req.signedCookies.userid});
+    return;
   });
   });
 });
@@ -179,7 +182,7 @@ app.post('/login', function(req, res){
 
 //log user out, cookies cleared //
 app.get('/logout', function(req,res){
-  res.clearCookie('username');
+  res.clearCookie('userid');
   console.log("logged out");
   res.redirect('/');
 });

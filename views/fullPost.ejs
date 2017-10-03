@@ -7,8 +7,10 @@
             <h1> <%= Full.Title %> </h1>
             <p> <%= Full.Date.toDateString() %> <p>
             <p> <%= Full.Content %> </p>
+            <% if(User == Full.UserId){ %>
             <button type="button" id="<%=Full._id%>" class="edit btn btn-default">Edit</button>
             <button type="button" id="<%= Full._id%>" name="delete" class="delete btn btn-default">Delete</button>
+            <% } %>
           </div>
         </div>
       <div class="row">
