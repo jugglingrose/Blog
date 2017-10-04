@@ -69,7 +69,7 @@ app.post('/create', function(req, res){
 
 //Open blog in edit mode to edit an existing blog post//
 app.get('/edit/:edit', function(req,res){
-  console.log("edit called");
+  console.log("edit/:edit called");
   var o_id = new mongo.ObjectId(req.params.edit)
   console.log(o_id);
   db.collection('Blog').findOne({"_id": o_id}, function(err, result){
@@ -80,6 +80,7 @@ app.get('/edit/:edit', function(req,res){
   });
 });
 
+
 //save the new blog edits to db//
 app.post('/edit', function (req,res){
   console.log("I am about to save my new blog edits to db");
@@ -87,8 +88,10 @@ app.post('/edit', function (req,res){
   var content = req.body.content;
   var id = req.body.id;
   var date = req.body.date
+  var UserId = req.signedCookies.userid;
+  console.log("I made an edit and this is the UserID for the blog post:" + UserId);
   var date = new Date(date);
-  db.collection('Blog').save({'_id':ObjectId(id),'Title': title, 'Content': content, 'Date': date},
+  db.collection('Blog').save({'_id':ObjectId(id),'Title': title, 'Content': content, 'Date': date, 'UserId': ObjectId(UserId)},
   function(err,result){
     if (err) throw err;
     console.log("blog has been successfully updated in the DB");
