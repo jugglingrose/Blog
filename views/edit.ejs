@@ -1,0 +1,19 @@
+<% include partials/header.ejs %>
+<body id="edit">
+  <% include partials/nav.ejs %>
+  <div class="container">
+    <div class="wrap">
+      <h1>Submit Blog Post</h1>
+      <form method="POST" action="/edit">
+        <input type="hidden" name="id" value="<%= editBlog._id %>"></input>
+        <input type="hidden" name="date" value="<%= editBlog.Date %>"></input>
+        Title: </br>
+        <input type="text" name="title" value="<%= editBlog.Title%>"></input>
+        Content: </br>
+        <textarea  name="content" rows="12" columns="30"><%= editBlog.Content%></textarea>
+        <button type="submit" value="submit" class='btn-default'>Submit</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

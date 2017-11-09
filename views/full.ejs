@@ -1,0 +1,32 @@
+<% include partials/header.ejs %>
+<body>
+  <div class="container">
+    <section>
+    <div class="row">
+          <div class="col-xs-12" id="blog[i]">
+            <h1> <%= Full.Title %> </h1>
+            <p> <%= Full.Date.toDateString() %> <p>
+            <p> <%= Full.Content %> </p>
+          </div>
+        </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <h2>Comments</h2>
+          <% if(postedComment !== null){
+            var C = postedComment;
+            for(var i = 0; i<C.length; i++){%>
+              <p><%= C[i].Comment %></p>
+            <% }
+          } %>
+          <p> </p>
+          <form method="POST" action="/fullpost">
+            <input name="identity" type="hidden" value="<%=Full._id%>" ></input>
+            <textarea name="comment" type="text" col="30" row"6"></textarea>
+            <button type="submit" class="comment" value="submit">SUBMIT</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+  </body>
+</html>

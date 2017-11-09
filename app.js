@@ -222,7 +222,7 @@ MongoClient.connect(config.mongo_uri, function(err, database){
   if (err) throw err;
   console.log('succesfully connected to database');
   db = database;
-  app.listen(3000, function(){
+  app.listen(8080, function(){
     console.log('succesfully connected to the server');
   });
 });
