@@ -7,7 +7,7 @@ app.set('view engine', 'ejs');
 app.use(express.static('assets'));
 
 //access mongodb PW//
-var config = require('./config');
+var config = require('./config.secret');
 
 var mongo = require('mongodb');
 var MongoClient = require('mongodb').MongoClient;
