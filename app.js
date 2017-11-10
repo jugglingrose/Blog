@@ -9,6 +9,10 @@ app.use(express.static('assets'));
 //access mongodb PW//
 var config = require('./config.secret');
 
+const expressMongoDb = require('express-mongo-db');
+app.use(expressMongoDb(config.mongo_url));
+
+
 var mongo = require('mongodb');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
@@ -23,12 +27,12 @@ var cookieParser = require('cookie-parser');
 app.use(cookieParser(config.cookie_secret));
 
 //Bcrypt for password hashing//
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 const saltRounds = 10;
 
 
 app.get('/', function(req, res){
-    db.collection('Blog').find({}).toArray(function(err,result){
+    req.db.collection('Blog').find({}).toArray(function(err,result){
     if (err) throw err;
     console.log(result);
     res.render('index', {blog: result});
@@ -60,7 +64,7 @@ app.post('/create', function(req, res){
   console.log(content);
   console.log(date);
   console.log("this is the userID cookie:" + signed);
-  db.collection('Blog').insertOne({'Title': title, 'Content': content, 'Date': date, 'UserId': ObjectId(signed)}, function(err, result){
+  req.db.collection('Blog').insertOne({'Title': title, 'Content': content, 'Date': date, 'UserId': ObjectId(signed)}, function(err, result){
     if (err) throw err;
     console.log("item successfully added to database");
     res.redirect('/');
@@ -72,7 +76,7 @@ app.get('/edit/:edit', function(req,res){
   console.log("edit/:edit called");
   var o_id = new mongo.ObjectId(req.params.edit)
   console.log(o_id);
-  db.collection('Blog').findOne({"_id": o_id}, function(err, result){
+  req.db.collection('Blog').findOne({"_id": o_id}, function(err, result){
     if (err) throw err;
     console.log('result is:' + result);
     console.log('Title is:' + result.Title);
@@ -91,7 +95,7 @@ app.post('/edit', function (req,res){
   var UserId = req.signedCookies.userid;
   console.log("I made an edit and this is the UserID for the blog post:" + UserId);
   var date = new Date(date);
-  db.collection('Blog').save({'_id':ObjectId(id),'Title': title, 'Content': content, 'Date': date, 'UserId': ObjectId(UserId)},
+  req.db.collection('Blog').save({'_id':ObjectId(id),'Title': title, 'Content': content, 'Date': date, 'UserId': ObjectId(UserId)},
   function(err,result){
     if (err) throw err;
     console.log("blog has been successfully updated in the DB");
@@ -104,7 +108,7 @@ app.delete('/fullpost/:del', function(req,res){
   console.log("delete post has been called");
   var o_id = new mongo.ObjectId(req.params.del);
   console.log(o_id);
-  db.collection('Blog').remove({'_id':o_id}, function(err, result){
+  req.db.collection('Blog').remove({'_id':o_id}, function(err, result){
     if (err) throw err;
     console.log("blog post has been succesfully deleted from the DB");
      res.status(200).end()
@@ -116,13 +120,13 @@ app.get('/fullpost/:blog', function(req,res){
   console.log("get full post called");
   var o_id = new mongo.ObjectID(req.params.blog);
   console.log(o_id);
-  db.collection('Blog').findOne({"_id": o_id}, function(err, result){
+  req.db.collection('Blog').findOne({"_id": o_id}, function(err, result){
     if (err) throw err;
     console.log("result is:" + result);
     console.log("Title is:" + result.Title);
     console.log("blog user id is:" + result.UserId);
     /*res.render('fullpost', {Full:result});*/
-  db.collection('Comments').find({"Blog_id": o_id}).toArray(function(err, results){
+  req.db.collection('Comments').find({"Blog_id": o_id}).toArray(function(err, results){
     if (err) throw err;
     console.log(results);
     console.log(results.Comment);
@@ -141,7 +145,7 @@ app.post('/fullpost', function (req,res){
   var comment = req.body.comment;
   console.log(comment);
   console.log(id);
-  db.collection('Comments').insertOne({'Comment': comment, 'Blog_id':ObjectId(id)}, function(err, result){
+  req.db.collection('Comments').insertOne({'Comment': comment, 'Blog_id':ObjectId(id)}, function(err, result){
     if (err) throw err;
     console.log("comment successfully inserted into database");
     var blog = id;
@@ -159,7 +163,7 @@ app.post('/login', function(req, res){
   var username = req.body.username;
   var password = req.body.password;
   console.log(username);
-  db.collection('BlogUser').findOne({"username": username}, function(err, user){
+  req.db.collection('BlogUser').findOne({"username": username}, function(err, user){
     if(!user){
       console.log("username not found");
       res.redirect('/login');
@@ -208,7 +212,7 @@ app.post('/signup', function(req,res){
   console.log(username);
   console.log(password);
   bcrypt.hash(password, saltRounds, function(err,hash){
-    db.collection("BlogUser").insertOne({'name': name, 'email': email, 'username':
+    req.db.collection("BlogUser").insertOne({'name': name, 'email': email, 'username':
     username, 'password': hash}, function(err, result){
       if (err) throw err;
       console.log("new user inserted to BlogUser DB");
@@ -218,11 +222,10 @@ app.post('/signup', function(req,res){
 });
 
 
-MongoClient.connect(config.mongo_uri, function(err, database){
-  if (err) throw err;
-  console.log('succesfully connected to database');
-  db = database;
-  app.listen(8080, function(){
-    console.log('succesfully connected to the server');
-  });
-});
+if (require.main === module) {
+    app.listen(config.port, function() {
+        console.log("Local server started");
+    });
+}
+
+module.exports = app;
