@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./app.js",
-    "lambda-deploy": "zip -r -X /tmp/lambda.zip . && aws lambda update-function-code --function-name $npm_package_config_lambda_name --zip-file fileb:///tmp/lambda.zip --publish"
+    "lambda-deploy": "zip -r -X /tmp/lambda.zip * && aws lambda update-function-code --function-name $npm_package_config_lambda_name --zip-file fileb:///tmp/lambda.zip --publish"
   },
   "config": {
     "lambda-name": "corean-blog"
@@ -14,6 +14,7 @@
   "author": "Corean Gonzales",
   "license": "ISC",
   "dependencies": {
+    "aws-serverless-express": "^3.0.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
